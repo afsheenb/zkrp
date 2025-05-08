@@ -1,8 +1,8 @@
 module github.com/0xdecaf/zkrp
 
-go 1.13
+go 1.24
 
 require (
-	github.com/ethereum/go-ethereum v1.9.10
+	github.com/btcbtcsuite/btcd/btcec/v2@master
 	github.com/stretchr/testify v1.4.0
 )
