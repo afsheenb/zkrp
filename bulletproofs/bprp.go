@@ -22,10 +22,10 @@ import (
 )
 
 /*
-bprp structure contains 2 BulletProofs in order to allow computation of
+Bprp structure contains 2 BulletProofs in order to allow computation of
 generic Range Proofs, for any interval [A, B).
 */
-type bprp struct {
+type Bprp struct {
     A   int64
     B   int64
     BP1 BulletProofSetupParams
@@ -44,8 +44,8 @@ type ProofBPRP struct {
 SetupGeneric is responsible for calling the Setup algorithm for each
 BulletProof.
 */
-func SetupGeneric(a, b int64) (*bprp, error) {
-    params := new(bprp)
+func SetupGeneric(a, b int64) (*Bprp, error) {
+    params := new(Bprp)
     params.A = a
     params.B = b
     var errBp1, errBp2 error
@@ -66,7 +66,7 @@ allow generic intervals in the format [A, B) it is necessary to use 2
 BulletProofs, as explained in Section 4.3 from the following paper:
 https://infoscience.epfl.ch/record/128718/files/CCS08.pdf
 */
-func ProveGeneric(secret *big.Int, params *bprp) (ProofBPRP, error) {
+func ProveGeneric(secret *big.Int, params *Bprp) (ProofBPRP, error) {
     var proof ProofBPRP
 
     // x - b + 2^N
