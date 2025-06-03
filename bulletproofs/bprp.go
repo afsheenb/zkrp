@@ -19,6 +19,7 @@ package bulletproofs
 
 import (
     "math/big"
+    "github.com/afsheenb/zkrp/crypto/p256"
 )
 
 /*
@@ -54,6 +55,26 @@ func SetupGeneric(a, b int64) (*Bprp, error) {
         return nil, errBp1
     }
     params.BP2, errBp2 = Setup(MAX_RANGE_END)
+    if errBp2 != nil {
+        return nil, errBp2
+    }
+    return params, nil
+}
+
+/*
+SetupGenericWithH is responsible for calling the Setup algorithm for each
+BulletProof with a custom H point for commitment consistency.
+*/
+func SetupGenericWithH(a, b int64, customH *p256.P256) (*Bprp, error) {
+    params := new(Bprp)
+    params.A = a
+    params.B = b
+    var errBp1, errBp2 error
+    params.BP1, errBp1 = Setup(MAX_RANGE_END, customH)
+    if errBp1 != nil {
+        return nil, errBp1
+    }
+    params.BP2, errBp2 = Setup(MAX_RANGE_END, customH)
     if errBp2 != nil {
         return nil, errBp2
     }
