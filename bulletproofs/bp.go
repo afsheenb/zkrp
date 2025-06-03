@@ -72,14 +72,21 @@ SetupInnerProduct is responsible for computing the common parameters.
 Only works for ranges to 0 to 2^n, where n is a power of 2 and n <= 32
 TODO: allow n > 32 (need uint64 for that).
 */
-func Setup(b int64) (BulletProofSetupParams, error) {
+func Setup(b int64, customH ...*p256.P256) (BulletProofSetupParams, error) {
     if !IsPowerOfTwo(b) {
         return BulletProofSetupParams{}, errors.New("range end is not a power of 2")
     }
 
     params := BulletProofSetupParams{}
     params.G = new(p256.P256).ScalarBaseMult(new(big.Int).SetInt64(1))
-    params.H, _ = p256.MapToGroup(SEEDH)
+    
+    // Use custom H if provided, otherwise use default
+    if len(customH) > 0 && customH[0] != nil {
+        params.H = customH[0]
+    } else {
+        params.H, _ = p256.MapToGroup(SEEDH)
+    }
+    
     params.N = int64(math.Log2(float64(b)))
     if !IsPowerOfTwo(params.N) {
         return BulletProofSetupParams{}, fmt.Errorf("range end is a power of 2, but it's exponent should also be. Exponent: %d", params.N)
