@@ -109,13 +109,6 @@ eprint version of Bulletproofs papers:
 https://eprint.iacr.org/2017/1066.pdf
 */
 func Prove(secret *big.Int, params BulletProofSetupParams) (BulletProof, error) {
-    var (
-        proof BulletProof
-    )
-    // ////////////////////////////////////////////////////////////////////////////
-    // First phase: page 19
-    // ////////////////////////////////////////////////////////////////////////////
-
     // commitment to v and gamma
     gamma, _ := rand.Int(rand.Reader, ORDER)
     V, _ := CommitG1(secret, gamma, params.H)
