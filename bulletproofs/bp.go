@@ -120,6 +120,34 @@ func Prove(secret *big.Int, params BulletProofSetupParams) (BulletProof, error) 
     gamma, _ := rand.Int(rand.Reader, ORDER)
     V, _ := CommitG1(secret, gamma, params.H)
 
+    return proveWithCommitment(secret, params, V, gamma)
+}
+
+/*
+ProveWithCommitment computes the ZK rangeproof using a pre-computed commitment.
+This is used when the commitment has already been computed externally to ensure
+consistency between proof generation and verification.
+*/
+func ProveWithCommitment(secret *big.Int, params BulletProofSetupParams, commitment *p256.P256, gamma *big.Int) (BulletProof, error) {
+    if commitment == nil {
+        return BulletProof{}, errors.New("commitment cannot be nil")
+    }
+    if gamma == nil {
+        return BulletProof{}, errors.New("gamma cannot be nil")
+    }
+    
+    return proveWithCommitment(secret, params, commitment, gamma)
+}
+
+/*
+proveWithCommitment is the internal implementation that accepts a commitment V and gamma.
+Both Prove and ProveWithCommitment use this function.
+*/
+func proveWithCommitment(secret *big.Int, params BulletProofSetupParams, V *p256.P256, gamma *big.Int) (BulletProof, error) {
+    var (
+        proof BulletProof
+    )
+
     // aL, aR and commitment: (A, alpha)
     aL, _ := Decompose(secret, 2, params.N)                                    // (41)
     aR, _ := computeAR(aL)                                                     // (42)
